@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\auth\AuthController;
 
 use App\Http\Controllers\backend\user\UserController;
-
+use App\Http\Controllers\backend\StudentClassController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -25,5 +25,15 @@ Route::middleware('api.auth:api')->group(function (){
     Route::post('/logout',[AuthController::class,'logout']);
 
 
+    Route::prefix('class')->controller(StudentClassController::class)->group(function (){
+        Route::get('/index',[StudentClassController::class,'index']);
+        Route::get('/show',[StudentClassController::class,'show']);
+        Route::post('/store',[StudentClassController::class,'store']);
+        Route::post('/update',[StudentClassController::class,'update']);
+        Route::post('/delete',[StudentClassController::class,'destroy']);
+    });
+
    Route::apiResource('user',UserController::class);
+
+
 });
