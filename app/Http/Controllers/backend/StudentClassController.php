@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Mockery\Exception;
 
 class StudentClassController extends Controller
 {
@@ -33,18 +34,15 @@ class StudentClassController extends Controller
             ]);
         }
 
-        $insertClass = DB::table('student_classes')->insert([
-           'name'=>$request->className,
-        ]);
-
-        if ($insertClass > 0){
-            return response()->json([
-                'message'=>'Class save successfully'
+        try {
+            $insertClass = DB::table('student_classes')->insert([
+                'name'=>$request->className,
             ]);
+            return apiResponse(null,'Class save successfully');
         }
-        return response()->json([
-        'error'=>'Try again, something went wrong'
-    ]);
+        catch (Exception $e){
+            return apiError($e->getMessage(),$e->getCode());
+        }
 
     }
 
@@ -53,16 +51,17 @@ class StudentClassController extends Controller
      */
     public function show(Request $request)
     {
-        $class = DB::table('student_classes')->where('id',$request->id)->first();
-        if ($class != null){
-            return response()->json([
-                'data'=>$class
-            ]);
+        try {
+            $class = DB::table('student_classes')->where('id',$request->id)->first();
+            if ($class != null){
+                return apiResponse($class,'');
+            }
+            else{
+                return apiResponse(null,'No data found');
+            }
         }
-        else{
-            return response()->json([
-               'data'=>null
-            ]);
+        catch (Exception $e){
+            return apiError($e->getMessage(),$e->getCode());
         }
 
     }
@@ -81,19 +80,16 @@ class StudentClassController extends Controller
             ]);
         }
 
-        $updateClass = DB::table('student_classes')->where('id',$request->id)
-            ->update([
-               'name'=>$request->className
-            ]);
-
-        if ($updateClass > 0){
-            return response()->json([
-                'message'=>'Class update successfully'
-            ]);
+        try {
+            $updateClass = DB::table('student_classes')->where('id',$request->id)
+                ->update([
+                    'name'=>$request->className
+                ]);
+            return apiResponse(null,'Class update successfully');
         }
-        return response()->json([
-            'error'=>'Try again, something went wrong'
-        ]);
+        catch (Exception $e){
+            return apiError($e->getMessage(),$e->getCode());
+        }
 
 
     }
@@ -103,16 +99,13 @@ class StudentClassController extends Controller
      */
     public function destroy(Request $request)
     {
-        $class = DB::table('student_classes')->where('id',$request->id)->delete();
-        if ($class > 0){
-            return response()->json([
-                'message'=> "Delete successfully"
-            ]);
+
+        try {
+            $class = DB::table('student_classes')->where('id',$request->id)->delete();
+            return apiResponse(null,'Class Delete successfully');
         }
-        else {
-            return response()->json([
-                'error'=>'Try again, something went wrong'
-            ]);
+        catch (Exception $e){
+            return apiError($e->getMessage(),$e->getCode());
         }
     }
 }
