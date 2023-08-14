@@ -7,6 +7,7 @@ use App\Http\Controllers\auth\AuthController;
 use App\Http\Controllers\backend\user\UserController;
 use App\Http\Controllers\backend\StudentClassController;
 use App\Http\Controllers\backend\StudentYearController;
+use App\Http\Controllers\backend\StudentGroupController;
 
 
 
@@ -44,6 +45,14 @@ Route::middleware('api.auth:api')->group(function (){
         Route::post('/store',[StudentYearController::class,'store']);
         Route::post('/update',[StudentYearController::class,'update']);
         Route::get('/delete/{id}',[StudentYearController::class,'destroy']);
+    });
+
+    Route::prefix('group')->controller(StudentGroupController::class)->group(function (){
+       Route::get('/index','index');
+       Route::get('/show/{id}','show');
+       Route::post('/store','store');
+       Route::post('/update','update');
+       Route::get('/delete/{id}','destroy');
     });
 
    Route::apiResource('user',UserController::class);
