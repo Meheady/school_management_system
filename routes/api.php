@@ -8,7 +8,9 @@ use App\Http\Controllers\backend\user\UserController;
 use App\Http\Controllers\backend\StudentClassController;
 use App\Http\Controllers\backend\StudentYearController;
 use App\Http\Controllers\backend\StudentGroupController;
-
+use App\Http\Controllers\backend\StudentShiftController;
+use App\Http\Controllers\backend\FeeCategoryController;
+use App\Http\Controllers\backend\FeeCategoryAmountController;
 
 
 
@@ -54,6 +56,31 @@ Route::middleware('api.auth:api')->group(function (){
        Route::post('/update','update');
        Route::get('/delete/{id}','destroy');
     });
+
+    Route::prefix('shift')->controller(StudentShiftController::class)->group(function (){
+       Route::get('/index','index');
+       Route::get('/show/{id}','show');
+       Route::post('/store','store');
+       Route::post('/update','update');
+       Route::get('/delete/{id}','destroy');
+    });
+
+    Route::prefix('fee-category')->controller(FeeCategoryController::class)->group(function (){
+       Route::get('/index','index');
+       Route::get('/show/{id}','show');
+       Route::post('/store','store');
+       Route::post('/update','update');
+       Route::get('/delete/{id}','destroy');
+    });
+
+    Route::prefix('fee-category-amount')->controller(FeeCategoryAmountController::class)->group(function (){
+        Route::get('/index','index');
+        Route::get('/show/{id}','show');
+        Route::post('/store','store');
+        Route::post('/update','update');
+        Route::get('/delete/{id}','destroy');
+    });
+
 
    Route::apiResource('user',UserController::class);
 
