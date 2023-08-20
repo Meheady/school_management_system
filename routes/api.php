@@ -11,6 +11,8 @@ use App\Http\Controllers\backend\StudentGroupController;
 use App\Http\Controllers\backend\StudentShiftController;
 use App\Http\Controllers\backend\FeeCategoryController;
 use App\Http\Controllers\backend\FeeCategoryAmountController;
+use App\Http\Controllers\backend\ExamTypeController;
+use App\Http\Controllers\backend\SchoolSubjectController;
 
 
 
@@ -74,6 +76,22 @@ Route::middleware('api.auth:api')->group(function (){
     });
 
     Route::prefix('fee-category-amount')->controller(FeeCategoryAmountController::class)->group(function (){
+        Route::get('/index','index');
+        Route::get('/show/{category_id}','show');
+        Route::post('/store','store');
+        Route::post('/update','update');
+        Route::get('/delete/{id}','destroy');
+    });
+
+    Route::prefix('exam-type')->controller(ExamTypeController::class)->group(function (){
+        Route::get('/index','index');
+        Route::get('/show/{id}','show');
+        Route::post('/store','store');
+        Route::post('/update','update');
+        Route::get('/delete/{id}','destroy');
+    });
+
+    Route::prefix('school-subject')->controller(SchoolSubjectController::class)->group(function (){
         Route::get('/index','index');
         Route::get('/show/{id}','show');
         Route::post('/store','store');
