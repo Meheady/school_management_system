@@ -17,6 +17,21 @@ class StudentRegController extends Controller
         return $imgPath.$imgName;
     }
 
+    public function search(Request $request){
+
+        $year = $request->year;
+        $class = $request->class;
+
+        $searchStudent = DB::table('student_registrations AS sr')
+            ->join('users AS u','u.id','=','sr.student_id')
+            ->join('student_years AS yr','yr.id','=','sr.year_id')
+            ->join('student_classes AS cls','cls.id','=','sr.class_id')
+            ->select('u.name as student_name','yr.name as student_year','cls.name as student_class','u.profile_photo_path as student_image')
+            ->where('sr.class_id',$class)->orWhere('sr.year_id',$year)->get();
+        return $searchStudent;
+
+    }
+
     public function store(Request $request)
     {
 
@@ -71,10 +86,7 @@ class StudentRegController extends Controller
                     'fee_category_id'=> $request->discountFeeCategory,
                     'discount'=>$request->discount,
                 ]);
-
-                if ($insertStudent && $registrationStudent && $discountStudent){
-                    return apiResponse(null,'Student registration complete');
-                }
+                return apiResponse(null,'Student registration complete');
             });
         }
         catch (\Exception $e){
