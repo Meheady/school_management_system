@@ -120,7 +120,7 @@ Route::middleware('api.auth:api')->group(function (){
 
     Route::prefix('student-reg')->controller(StudentRegController::class)->group(function (){
         Route::get('/index','index');
-        Route::get('/show/{id}','show');
+        Route::get('/show/{student_id}','show');
         Route::post('/store','store');
         Route::post('/update','update');
         Route::get('/delete/{id}','destroy');

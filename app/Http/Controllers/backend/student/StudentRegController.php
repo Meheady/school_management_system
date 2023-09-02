@@ -26,12 +26,20 @@ class StudentRegController extends Controller
             ->join('users AS u','u.id','=','sr.student_id')
             ->join('student_years AS yr','yr.id','=','sr.year_id')
             ->join('student_classes AS cls','cls.id','=','sr.class_id')
-            ->select('u.name as student_name','yr.name as student_year','cls.name as student_class','u.profile_photo_path as student_image')
+            ->select('sr.student_id','u.name as student_name','yr.name as student_year','cls.name as student_class','u.profile_photo_path as student_image')
             ->where('sr.class_id',$class)->orWhere('sr.year_id',$year)->get();
         return $searchStudent;
 
     }
+    public function show ($student_id){
+        $showStudent = DB::table('student_registrations AS sr')
+            ->join('users AS u','u.id','=','sr.student_id')
+            ->join('discount_students AS ds','sr.id','=','ds.student_reg_id')
+            ->select('sr.*','u.*','ds.*')
+            ->where('sr.student_id',$student_id)->first();
 
+        return $showStudent;
+    }
     public function store(Request $request)
     {
 
@@ -83,6 +91,67 @@ class StudentRegController extends Controller
 
                 $discountStudent = DB::table('discount_students')->insertGetId([
                     'student_reg_id'=>$registrationStudent,
+                    'fee_category_id'=> $request->discountFeeCategory,
+                    'discount'=>$request->discount,
+                ]);
+                return apiResponse(null,'Student registration complete');
+            });
+        }
+        catch (\Exception $e){
+            return apiError($e->getMessage());
+        }
+
+    }
+
+    public function update(Request $request)
+    {
+
+        try {
+            DB::transaction(function () use ($request){
+
+                if ($request->hasFile('image')){
+                    $userData = DB::table('users')->where('id',$request->studentId)->first();
+
+                    if (file_exists($userData->profile_photo_path)){
+                        unlink($userData->profile_photo_path);
+                    }
+                    $updateStudent = DB::table('users')->where('id',$request->studentId)->update([
+                        'usertype'=>'student',
+                        'name'=>$request->studentName,
+                        'father_name'=>$request->fatherName,
+                        'mother_name'=>$request->motherName,
+                        'religion'=>$request->religion,
+                        'gender'=>$request->gender,
+                        'address'=>$request->address,
+                        'mobile'=>$request->mobileNumber,
+                        'dob'=>$request->DOB,
+                        'profile_photo_path'=>$this->uploadImg($request->file('image')),
+                    ]);
+                }
+                else{
+                    $updateStudent = DB::table('users')->where('id',$request->studentId)->update([
+                        'usertype'=>'student',
+                        'name'=>$request->studentName,
+                        'father_name'=>$request->fatherName,
+                        'mother_name'=>$request->motherName,
+                        'religion'=>$request->religion,
+                        'gender'=>$request->gender,
+                        'address'=>$request->address,
+                        'mobile'=>$request->mobileNumber,
+                        'dob'=>$request->DOB,
+                    ]);
+                }
+
+                $registerStudent = DB::table('student_registrations')->where('student_id',$request->studentId)->first();
+
+                $updateRegistrationStudent = DB::table('student_registrations')->where('student_id',$request->studentId)->update([
+                    'class_id'=>$request->classId,
+                    'year_id'=>$request->yearId,
+                    'group_id'=>$request->groupId,
+                    'shift_id'=>$request->shiftId,
+                ]);
+
+                $updateDiscountStudent = DB::table('discount_students')->where('student_reg_id',$registerStudent->id)->update([
                     'fee_category_id'=> $request->discountFeeCategory,
                     'discount'=>$request->discount,
                 ]);
