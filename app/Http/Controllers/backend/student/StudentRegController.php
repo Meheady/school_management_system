@@ -22,29 +22,46 @@ class StudentRegController extends Controller
         $year = $request->year;
         $class = $request->class;
 
-        $searchStudent = DB::table('student_registrations AS sr')
-            ->join('users AS u','u.id','=','sr.student_id')
-            ->join('student_years AS yr','yr.id','=','sr.year_id')
-            ->join('student_classes AS cls','cls.id','=','sr.class_id')
-            ->select('sr.student_id','u.name as student_name','yr.name as student_year','cls.name as student_class','u.profile_photo_path as student_image')
-            ->where('sr.class_id',$class)->orWhere('sr.year_id',$year)->get();
-        return $searchStudent;
+        try {
+            $searchStudent = DB::table('student_registrations AS sr')
+                ->join('users AS u','u.id','=','sr.student_id')
+                ->join('student_years AS yr','yr.id','=','sr.year_id')
+                ->join('student_classes AS cls','cls.id','=','sr.class_id')
+                ->select('sr.student_id','u.name as student_name','yr.name as student_year','cls.name as student_class','u.profile_photo_path as student_image')
+                ->where('sr.class_id',$class)->where('sr.year_id',$year)->get();
+            if ($searchStudent != null){
+                return apiResponse($searchStudent);
+            }
+            return apiResponse(null,'No data found');
+        }
+        catch (\Exception $e){
+            return apiError($e->getMessage());
+        }
 
     }
     public function show ($student_id){
-        $showStudent = DB::table('student_registrations AS sr')
-            ->join('users AS u','u.id','=','sr.student_id')
-            ->join('discount_students AS ds','sr.id','=','ds.student_reg_id')
-            ->select('sr.*','u.*','ds.*')
-            ->where('sr.student_id',$student_id)->first();
 
-        return $showStudent;
+        try {
+            $showStudent = DB::table('student_registrations AS sr')
+                ->join('users AS u','u.id','=','sr.student_id')
+                ->join('discount_students AS ds','sr.id','=','ds.student_reg_id')
+                ->select('sr.*','u.*','ds.*')
+                ->where('sr.student_id',$student_id)->first();
+            if ($showStudent != null){
+                return apiResponse($showStudent);
+            }
+            return apiResponse(null,'No data found');
+        }
+        catch (\Exception $e){
+            return apiError($e->getMessage());
+        }
+
     }
     public function store(Request $request)
     {
 
         try {
-            DB::transaction(function () use ($request){
+            return DB::transaction(function () use ($request){
                 $studentYear = DB::table('student_years')->select('name')->where('id',$request->yearId)->first();
                 $student = DB::table('users')->where('usertype', 'student')
                     ->orderBy('id','desc')
@@ -103,11 +120,39 @@ class StudentRegController extends Controller
 
     }
 
+    public function promotion(Request $request)
+    {
+
+        try {
+            return DB::transaction(function () use ($request){
+
+                $registrationStudent = DB::table('student_registrations')->insertGetId([
+                    'student_id'=>$request->studentId,
+                    'class_id'=>$request->classId,
+                    'year_id'=>$request->yearId,
+                    'group_id'=>$request->groupId,
+                    'shift_id'=>$request->shiftId,
+                ]);
+
+                $discountStudent = DB::table('discount_students')->insertGetId([
+                    'student_reg_id'=>$registrationStudent,
+                    'fee_category_id'=> $request->discountFeeCategory,
+                    'discount'=>$request->discount,
+                ]);
+                return apiResponse(null,'Student promote successfully');
+            });
+        }
+        catch (\Exception $e){
+            return apiError($e->getMessage());
+        }
+
+    }
+
     public function update(Request $request)
     {
 
         try {
-            DB::transaction(function () use ($request){
+            return DB::transaction(function () use ($request){
 
                 if ($request->hasFile('image')){
                     $userData = DB::table('users')->where('id',$request->studentId)->first();
@@ -155,7 +200,7 @@ class StudentRegController extends Controller
                     'fee_category_id'=> $request->discountFeeCategory,
                     'discount'=>$request->discount,
                 ]);
-                return apiResponse(null,'Student registration complete');
+                return apiResponse(null,'Student registration updated');
             });
         }
         catch (\Exception $e){

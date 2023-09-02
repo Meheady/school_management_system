@@ -125,6 +125,7 @@ Route::middleware('api.auth:api')->group(function (){
         Route::post('/update','update');
         Route::get('/delete/{id}','destroy');
         Route::post('/search/','search');
+        Route::post('/promotion/','promotion');
 
     });
 
