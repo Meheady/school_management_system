@@ -16,6 +16,7 @@ use App\Http\Controllers\backend\SchoolSubjectController;
 use App\Http\Controllers\backend\AssignSubjectController;
 use App\Http\Controllers\backend\DesignationController;
 use App\Http\Controllers\backend\student\StudentRegController;
+use App\Http\Controllers\backend\student\StudentRollController;
 
 
 
@@ -126,6 +127,12 @@ Route::middleware('api.auth:api')->group(function (){
         Route::get('/delete/{id}','destroy');
         Route::post('/search/','search');
         Route::post('/promotion/','promotion');
+        Route::get('/student-details/{student_id}','studentDetail');
+
+    });
+
+    Route::prefix('student-roll-generate')->controller(StudentRollController::class)->group(function (){
+        Route::post('/search','search');
 
     });
 
