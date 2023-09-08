@@ -29,4 +29,31 @@ class StudentRollController extends Controller
             return apiError($e->getMessage());
         }
     }
+
+    public function update(Request $request)
+    {
+        try {
+            $year = $request->year;
+            $class = $request->class;
+            $countData = count($request->id);
+
+            if ($countData > 0){
+                foreach ($request->roll as $index=>$item){
+                    $updateRoll = DB::table('student_registrations')
+                        ->where('class_id',$class)->where('year_id',$year)
+                        ->where('id',$request->id[$index])
+                        ->update([
+                           'roll'=> $request->roll[$index]
+                        ]);
+                }
+                return apiResponse(null,'Role update successfully');
+            }
+            else{
+                return apiError('Student not found');
+            }
+        }
+        catch (\Exception $e){
+            return apiError($e->getMessage());
+        }
+    }
 }

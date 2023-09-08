@@ -133,6 +133,7 @@ Route::middleware('api.auth:api')->group(function (){
 
     Route::prefix('student-roll-generate')->controller(StudentRollController::class)->group(function (){
         Route::post('/search','search');
+        Route::post('/update','update');
 
     });
 
