@@ -5,7 +5,7 @@ namespace App\Http\Controllers\backend\student;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use Barryvdh\DomPDF\Facade\Pdf;
 class StudentRegController extends Controller
 {
 
@@ -206,6 +206,35 @@ class StudentRegController extends Controller
         catch (\Exception $e){
             return apiError($e->getMessage());
         }
+
+    }
+
+    public function studentDetail ($student_id){
+
+        try {
+            $details = DB::table('student_registrations AS sr')
+                ->join('users AS u','u.id','=','sr.student_id')
+                ->join('discount_students AS ds','sr.id','=','ds.student_reg_id')
+                ->join('student_classes AS sc','sc.id','=','sr.class_id')
+                ->join('student_years AS sy','sy.id','=','sr.year_id')
+                ->join('student_shifts AS ss','ss.id','=','sr.shift_id')
+                ->join('student_groups AS sg','sg.id','=','sr.group_id')
+                ->select('u.*','ds.*','sc.name as class_name','sy.name as student_year','ss.name as student_shift','sg.name as student_group')
+                ->where('sr.student_id',$student_id)->first();
+            if ($details != null){
+
+                $pdf = Pdf::loadView('pdf.student_details', compact('details'));
+
+                $base64Pdf = base64_encode($pdf->output());
+                return response()->json(['pdf' => $base64Pdf]);
+            }
+            return apiResponse(null,'No data found');
+        }
+        catch (\Exception $e){
+            return apiError($e->getMessage());
+        }
+
+
 
     }
 }
