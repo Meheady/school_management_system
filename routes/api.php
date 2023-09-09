@@ -17,6 +17,7 @@ use App\Http\Controllers\backend\AssignSubjectController;
 use App\Http\Controllers\backend\DesignationController;
 use App\Http\Controllers\backend\student\StudentRegController;
 use App\Http\Controllers\backend\student\StudentRollController;
+use App\Http\Controllers\backend\student\RegistrationFeeController;
 
 
 
@@ -134,7 +135,10 @@ Route::middleware('api.auth:api')->group(function (){
     Route::prefix('student-roll-generate')->controller(StudentRollController::class)->group(function (){
         Route::post('/search','search');
         Route::post('/update','update');
-
+    });
+    Route::prefix('registration-fee')->controller(RegistrationFeeController::class)->group(function (){
+        Route::post('/search','search');
+        Route::post('/generate','generate');
     });
 
 
