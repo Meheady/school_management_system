@@ -22,8 +22,8 @@ class EmployeeRegController extends Controller
         try {
             $employees = DB::table('users as us')
                 ->join('designations as des','des.id','=','us.designation_id')
-                ->select('us.id','us.name','us.id_no','us.code','us.gender','us.salary','us.join_date','us.profile_photo_path','des.name')
-                ->where('user_type','employee')->get();
+                ->select('us.id','us.name','us.id_no','us.code','us.gender','us.salary','us.join_date','us.profile_photo_path','des.name as designation')
+                ->where('usertype','employee')->get();
             if ($employees !=null){
                 return apiResponse($employees);
             }
@@ -46,7 +46,7 @@ class EmployeeRegController extends Controller
                 $empJoinYear = date('Y',strtotime($request->joiningDate));
                 $employee = DB::table('users')
                     ->where('usertype','employee')
-                    ->orWhere('id','desc')->first();
+                    ->orderBy('id','desc')->first();
 
                 if ($employee == null){
                     $firstReg = 0;
@@ -74,10 +74,10 @@ class EmployeeRegController extends Controller
                     'religion'=>$request->religion,
                     'gender'=>$request->gender,
                     'address'=>$request->address,
-                    'mobile'=>$request->mobileNumber,
+                    'mobile'=>$request->mobile,
                     'dob'=>$request->DOB,
                     'join_date'=>$request->joiningDate,
-                    'designation_id'=>$request->designationId,
+                    'designation_id'=>$request->designation,
                     'salary'=>$request->salary,
                     'profile_photo_path'=>$this->uploadImg($request->file('profileImage')),
                 ]);
