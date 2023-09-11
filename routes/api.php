@@ -16,6 +16,7 @@ use App\Http\Controllers\backend\SchoolSubjectController;
 use App\Http\Controllers\backend\AssignSubjectController;
 use App\Http\Controllers\backend\DesignationController;
 use App\Http\Controllers\backend\student\StudentRegController;
+use App\Http\Controllers\backend\employee\EmployeeRegController;
 use App\Http\Controllers\backend\student\StudentRollController;
 use App\Http\Controllers\backend\student\RegistrationFeeController;
 
@@ -141,6 +142,13 @@ Route::middleware('api.auth:api')->group(function (){
         Route::post('/generate','generate');
     });
 
+    Route::prefix('employee-reg')->controller(EmployeeRegController::class)->group(function (){
+        Route::get('/index','index');
+        Route::get('/show/{student_id}','show');
+        Route::post('/store','store');
+        Route::post('/update','update');
+
+    });
 
    Route::apiResource('user',UserController::class);
 
