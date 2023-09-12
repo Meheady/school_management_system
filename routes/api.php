@@ -144,7 +144,7 @@ Route::middleware('api.auth:api')->group(function (){
 
     Route::prefix('employee-reg')->controller(EmployeeRegController::class)->group(function (){
         Route::get('/index','index');
-        Route::get('/show/{student_id}','show');
+        Route::get('/index/{employee_id}','show');
         Route::post('/store','store');
         Route::post('/update','update');
 

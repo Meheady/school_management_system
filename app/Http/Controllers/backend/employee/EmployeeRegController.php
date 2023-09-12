@@ -76,6 +76,7 @@ class EmployeeRegController extends Controller
                     'address'=>$request->address,
                     'mobile'=>$request->mobile,
                     'dob'=>$request->DOB,
+                    'email'=>$request->email,
                     'join_date'=>$request->joiningDate,
                     'designation_id'=>$request->designation,
                     'salary'=>$request->salary,
@@ -90,6 +91,70 @@ class EmployeeRegController extends Controller
                 ]);
                 return apiResponse(null,'Employee registration complete');
             });
+        }
+        catch (\Exception $e){
+            return apiError($e->getMessage());
+        }
+    }
+
+    public function update(Request $request)
+    {
+
+        try {
+            $updateId = $request->id;
+
+            $employee = DB::table('users')
+                ->where('id', $updateId);
+
+            $empImg = $employee->first();
+
+            if ($request->hasFile('profileImage')){
+                if (file_exists($empImg->profile_photo_path)){
+                    unlink($empImg->profile_photo_path);
+                }
+                $imgPath = $this->uploadImg($request->file('profileImage'));
+            }
+            else{
+                $imgPath = $empImg->profile_photo_path;
+            }
+
+            $updateEmployee = $employee->update([
+                'name'=>$request->name,
+                'father_name'=>$request->fatherName,
+                'mother_name'=>$request->motherName,
+                'religion'=>$request->religion,
+                'gender'=>$request->gender,
+                'address'=>$request->address,
+                'mobile'=>$request->mobile,
+                'email'=>$request->email,
+                'dob'=>$request->DOB,
+                'designation_id'=>$request->designation,
+                'profile_photo_path'=> $imgPath,
+            ]);
+
+            if ($updateEmployee) {
+                return apiResponse(null, 'Employee update complete');
+            }
+
+        }
+        catch (\Exception $e){
+            return apiError($e->getMessage());
+        }
+    }
+
+    public function show($employee_id)
+    {
+        try {
+            $employee = DB::table('users as us')
+                ->join('designations as des','des.id','=','us.designation_id')
+                ->select('us.*','des.name as designation_name')
+                ->where('us.id', $employee_id)->first();
+
+            if ($employee != null){
+                return apiResponse($employee);
+            }
+            return apiResponse(null,'NO data found');
+
         }
         catch (\Exception $e){
             return apiError($e->getMessage());
