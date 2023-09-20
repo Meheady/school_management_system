@@ -153,7 +153,7 @@ Route::middleware('api.auth:api')->group(function (){
     Route::prefix('employee-salary')->controller(EmpSalaryController::class)->group(function (){
         Route::get('/index','index');
         Route::get('/index/{employee_id}','show');
-        Route::post('/store','store');
+        Route::post('/increment','storeSalary');
         Route::post('/update','update');
     });
 

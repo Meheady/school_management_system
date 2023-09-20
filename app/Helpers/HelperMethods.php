@@ -1,6 +1,5 @@
 <?php
 
-
 function apiResponse($data=null, $message='',$status=200){
     $response = [
         'status' => $status >= 200 && $status < 300,
