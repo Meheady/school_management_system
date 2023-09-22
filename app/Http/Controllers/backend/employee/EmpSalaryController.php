@@ -48,18 +48,37 @@ class EmpSalaryController extends Controller
             return apiError($e->getMessage());
         }
     }
+    public function salaryDetails($employee_id)
+    {
+        try {
+            $details['employee'] = DB::table('users')->where('id',$employee_id)->select('name','join_date')->first();
+            $details['salaryDetails'] = DB::table('employee_salary_logs')
+                ->select('*')
+                ->where('employee_id',$employee_id)
+                ->get();
+
+            if ($details != null){
+                return apiResponse($details);
+            }
+            else{
+                return  apiResponse(null,'No data found');
+            }
+        }
+        catch (\Exception $e){
+            return apiError($e->getMessage());
+        }
+    }
 
 
     public function storeSalary(Request $request)
     {
         try {
             $employee = DB::table('users')->findOr($request->id);
-
             return DB::transaction(function () use ($employee, $request){
                 $pevSalary = $employee->salary;
                 $presSalary = (float)$request->incrementSalary + (float)$pevSalary;
 
-                $employee->update([
+                DB::table('users')->where('id',$employee->id)->update([
                     'salary'=>$presSalary
                 ]);
 

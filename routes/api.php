@@ -154,7 +154,7 @@ Route::middleware('api.auth:api')->group(function (){
         Route::get('/index','index');
         Route::get('/index/{employee_id}','show');
         Route::post('/increment','storeSalary');
-        Route::post('/update','update');
+        Route::get('/details/{employee_id}','salaryDetails');
     });
 
    Route::apiResource('user',UserController::class);
