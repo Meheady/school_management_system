@@ -19,10 +19,21 @@ class LeaveController extends Controller
             return apiError($e->getMessage());
         }
     }
-    public function store()
+    public function store(Request $request)
     {
         try {
-
+            EmployeeLeave::storeLeave($request);
+            return apiResponse(null,'Leave applied');
+        }
+        catch (\Exception $e){
+            return apiError($e->getMessage());
+        }
+    }
+    public function update(Request $request)
+    {
+        try {
+            EmployeeLeave::updateLeave($request);
+            return apiResponse(null,'Leave applied updated');
         }
         catch (\Exception $e){
             return apiError($e->getMessage());
