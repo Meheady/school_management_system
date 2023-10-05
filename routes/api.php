@@ -20,6 +20,8 @@ use App\Http\Controllers\backend\employee\EmployeeRegController;
 use App\Http\Controllers\backend\employee\EmpSalaryController;
 use App\Http\Controllers\backend\student\StudentRollController;
 use App\Http\Controllers\backend\student\RegistrationFeeController;
+use App\Http\Controllers\backend\leave\LeaveController;
+use App\Http\Controllers\backend\leave\LeaveTypeController;
 
 
 
@@ -157,6 +159,20 @@ Route::middleware('api.auth:api')->group(function (){
         Route::get('/details/{employee_id}','salaryDetails');
     });
 
+    Route::prefix('leave-type')->controller(LeaveTypeController::class)->group(function (){
+        Route::get('/index','index');
+        Route::get('/index/{id}','show');
+        Route::post('/store','store');
+        Route::post('/update','update');
+        Route::get('/delete/{id}','destroy');
+    });
+    Route::prefix('employee-leave')->controller(LeaveController::class)->group(function (){
+        Route::get('/index','index');
+        Route::get('/index/{id}','show');
+        Route::post('/store','store');
+        Route::post('/update','update');
+        Route::get('/delete/{id}','destroy');
+    });
    Route::apiResource('user',UserController::class);
 
 
