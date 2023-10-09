@@ -22,6 +22,7 @@ use App\Http\Controllers\backend\student\StudentRollController;
 use App\Http\Controllers\backend\student\RegistrationFeeController;
 use App\Http\Controllers\backend\leave\LeaveController;
 use App\Http\Controllers\backend\leave\LeaveTypeController;
+use App\Http\Controllers\backend\employee\EmployeeAttendenceController;
 
 
 
@@ -167,6 +168,14 @@ Route::middleware('api.auth:api')->group(function (){
         Route::get('/delete/{id}','destroy');
     });
     Route::prefix('employee-leave')->controller(LeaveController::class)->group(function (){
+        Route::get('/index','index');
+        Route::get('/index/{id}','show');
+        Route::post('/store','store');
+        Route::post('/update','update');
+        Route::get('/delete/{id}','destroy');
+    });
+
+    Route::prefix('employee-attendance')->controller(EmployeeAttendenceController::class)->group(function (){
         Route::get('/index','index');
         Route::get('/index/{id}','show');
         Route::post('/store','store');
