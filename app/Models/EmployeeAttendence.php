@@ -14,4 +14,10 @@ class EmployeeAttendence extends Model
     {
         EmployeeAttendence::insert($data);
     }
+
+
+    public function user()
+    {
+        return $this->belongsTo(User::class,'employee_id','id');
+    }
 }

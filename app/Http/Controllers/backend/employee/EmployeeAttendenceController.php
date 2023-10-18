@@ -11,7 +11,7 @@ class EmployeeAttendenceController extends Controller
     public function index()
     {
         try {
-            $allAttendance = EmployeeAttendence::latest()->get();
+            $allAttendance = EmployeeAttendence::with('user')->latest()->get();
             return $allAttendance;
         }
         catch (\Exception $e){
