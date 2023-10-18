@@ -177,7 +177,7 @@ Route::middleware('api.auth:api')->group(function (){
 
     Route::prefix('employee-attendance')->controller(EmployeeAttendenceController::class)->group(function (){
         Route::get('/index','index');
-        Route::get('/index/{id}','show');
+        Route::get('/index/{date}','show');
         Route::post('/store','store');
         Route::post('/update','update');
         Route::get('/delete/{id}','destroy');

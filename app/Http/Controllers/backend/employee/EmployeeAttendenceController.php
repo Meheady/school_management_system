@@ -11,8 +11,18 @@ class EmployeeAttendenceController extends Controller
     public function index()
     {
         try {
-            $allAttendance = EmployeeAttendence::with('user')->latest()->get();
-            return $allAttendance;
+            $allAttendance = EmployeeAttendence::groupBy('date')->select('id','date')->latest()->get();
+            return apiResponse($allAttendance);
+        }
+        catch (\Exception $e){
+            return  apiError($e->getMessage());
+        }
+    }
+    public function show($date)
+    {
+        try {
+            $allAttendance = EmployeeAttendence::with('user')->where('date', $date)->get();
+            return apiResponse($allAttendance);
         }
         catch (\Exception $e){
             return  apiError($e->getMessage());
