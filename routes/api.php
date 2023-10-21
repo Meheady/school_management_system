@@ -23,6 +23,7 @@ use App\Http\Controllers\backend\student\RegistrationFeeController;
 use App\Http\Controllers\backend\leave\LeaveController;
 use App\Http\Controllers\backend\leave\LeaveTypeController;
 use App\Http\Controllers\backend\employee\EmployeeAttendenceController;
+use App\Http\Controllers\backend\employee\MonthlySalaryController;
 
 
 
@@ -181,6 +182,10 @@ Route::middleware('api.auth:api')->group(function (){
         Route::post('/store','store');
         Route::post('/update','update');
         Route::get('/delete/{id}','destroy');
+    });
+    Route::prefix('employee-monthly-salary')->controller(MonthlySalaryController::class)->group(function (){
+        Route::post('/index','index');
+        Route::get('/index/{date}','show');
     });
    Route::apiResource('user',UserController::class);
 

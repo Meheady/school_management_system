@@ -50,7 +50,7 @@ class EmployeeAttendenceController extends Controller
                 }
                 EmployeeAttendence::storeAttendance($attendanceData);
 
-                return apiResponse('Attendance insert successfully');
+                return apiResponse(null,'Attendance insert successfully');
             }
 
         } catch (\Exception $e) {
@@ -78,7 +78,7 @@ class EmployeeAttendenceController extends Controller
                 }
                 EmployeeAttendence::storeAttendance($attendanceData);
 
-                return apiResponse('Attendance update successfully');
+                return apiResponse(null,'Attendance update successfully');
             }
 
         } catch (\Exception $e) {
